@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>Predictions xG</title>
+<style>
+body { font-family: Arial; background:#121212; color:white; text-align:center; }
+box { background:#1e1e1e; padding:20px; border-radius:10px; width:80%; margin:auto; }
+input { width:80%; padding:10px; border-radius:5px; border:none; margin:15px 0; }
+button { padding:10px 20px; border:none; border-radius:5px; background:#00aaff; color:white; font-size:16px; cursor:pointer; }
+.result { background:#1f1f1f; padding:20px; border-radius:10px; margin-top:20px; }
+</style>
+</head>
+<body>
+
+<h1>⚽ xG – Prediction Model</h1>
+<box>
+<input type="text" id="match" placeholder="مثال: Chelsea vs Arsenal">
+<button onclick="predict()">Generate Prediction</button>
+</box>
+
+<div id="output" class="result"></div>
+
+<script>
+function random(min, max) { return (Math.random() * (max - min) + min); }
+
+function predict() {
+    let teams = document.getElementById("match").value;
+    if (!teams.includes("vs")) { 
+        document.getElementById("output").innerHTML = "⚠️ المرجو كتابة: Team1 vs Team2"; 
+        return; 
+    }
+
+    let a = teams.split("vs")[0].trim();
+    let b = teams.split("vs")[1].trim();
+
+    let xgA = random(0.7, 2).toFixed(2);
+    let xgB = random(0.7, 2).toFixed(2);
+
+    let homeWin = ((xgA / (parseFloat(xgA)+parseFloat(xgB))) * 100).toFixed(1);
+    let awayWin = ((xgB / (parseFloat(xgA)+parseFloat(xgB))) * 100).toFixed(1);
+    let draw = (100 - homeWin - awayWin).toFixed(1);
+
+    let btts = random(45, 70).toFixed(1);
+    let over25 = random(40, 65).toFixed(1);
+
+    let scoreA = Math.round(xgA);
+    let scoreB = Math.round(xgB);
+
+    document.getElementById("output").innerHTML = `
+        <h2>${a} vs ${b}</h2>
+        <p>📊 <strong>نسب الفوز:</strong></p>
+        ${a}: ${homeWin}%<br>
+        تعادل: ${draw}%<br>
+        ${b}: ${awayWin}%<br><br>
+
+        <p><strong>BTTS</strong>: ${btts}%</p>
+        <p><strong>Over 2.5</strong>: ${over25}%</p>
+
+        <p><strong>xG</strong>:</p>
+        ${a}: ${xgA}<br>
+        ${b}: ${xgB}<br><br>
+
+        <p><strong>النتيجة المحتملة:</strong></p>
+        ${a} ${scoreA} - ${scoreB} ${b}<br><br>
+
+        <strong>🎯 Best Pick:</strong> ${btts > 55 ? "BTTS" : "Over 2.5"}
+    `;
+}
+</script>
+
+</body>
+</html>
